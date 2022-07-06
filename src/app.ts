@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse, ResponseType } from 'axios';
 import { getSystem } from './section/system';
 import { getOs, IOs } from './section/os';
 import { getCpu, ICpu } from './section/cpu';
@@ -39,26 +39,35 @@ async function getAllData(): Promise<Result> {
     return result;
 }
 
-function sendReport(data: Result): void {
+async function sendReport(data: Result): Promise<void> {
     let url: string = 'http://localhost:3000/api/v1/device/';
-    axios.post(url, data)
-            .then((res: any) => {
-                console.log(res.status, res.data);
-            }).catch((err: any) => {
-                if(err.response.status === 409) {
-                    axios.put(url + data.hardwareUuid, data)
-                            .then((res: any) => {
-                                console.log(res.status, res.data)
-                            });
-                } else {
-                    console.error(err);
-                }
-            });
+
+    try {
+        let res = await axios.put(url + data.hardwareUuid, data);
+
+        console.log(`Code: ${res.status}`);
+        console.log(`Status: ${res.data.status}`); 
+        console.log(`Info: ${res.data.message}`); 
+    } catch(err: any) {
+        if(err.response.status !== 404)
+            console.error(err);
+        
+        try {
+            let res = await axios.post(url, data);
+
+            console.log(`Code: ${res.status}`);
+            console.log(`Status: ${res.data.status}`); 
+            console.log(`Info: ${res.data.message}`); 
+        } catch(err) {
+            console.error(err);
+        }
+    }
 }
 
-getAllData().then((result: Result) => {
-    sendReport(result);
-}).catch((err) => {
-    console.log(err);
-})
+async function app() {
+    const data: Result = await getAllData();
+    sendReport(data);
+}
+
+app();
 
