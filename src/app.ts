@@ -13,9 +13,6 @@ interface Result {
     network: INetwork
 }
 
-sortAndDeduplicateDiagnosticsdas
-dsa
-
 async function getAllData(): Promise<Result> {
 
     let result = {} as Result;
