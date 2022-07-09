@@ -3,6 +3,7 @@ import { getSystem } from './section/system';
 import { getOs, IOs } from './section/os';
 import { getCpu, ICpu } from './section/cpu';
 import { getNetwork, INetwork } from './section/network';
+import { sortAndDeduplicateDiagnostics } from 'typescript';
 
 interface Result {
     osUuid: string;
@@ -11,6 +12,9 @@ interface Result {
     cpu: ICpu
     network: INetwork
 }
+
+sortAndDeduplicateDiagnosticsdas
+dsa
 
 async function getAllData(): Promise<Result> {
 
